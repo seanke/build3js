@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>BUILD3JS</title>
+    <style>
+      html, body { height: 100%; margin: 0; }
+      #app { height: calc(100% - 36px); }
+      body { background: #0c0f14; color: #d6dde7; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Helvetica Neue, Arial, "Apple Color Emoji", "Segoe UI Emoji"; }
+      .menubar { height: 36px; display: flex; align-items: center; gap: 8px; padding: 0 8px; background: #0b1220; border-bottom: 1px solid #1f2937; position: relative; z-index: 20; }
+      .menu { position: relative; }
+      .menu-title { background: transparent; border: 0; color: #e5e7eb; padding: 6px 10px; border-radius: 6px; cursor: default; }
+      .menu:hover .menu-title { background: #111827; }
+      .menu-dropdown { position: absolute; top: 28px; left: 0; background: #0b1324; border: 1px solid #1f2937; border-radius: 6px; display: none; flex-direction: column; min-width: 180px; box-shadow: 0 8px 24px rgba(0,0,0,0.35); }
+      .menu:hover .menu-dropdown { display: flex; }
+      .menu-item { background: transparent; color: #e5e7eb; border: 0; padding: 8px 10px; text-align: left; cursor: pointer; }
+      .menu-item:hover { background: #111827; }
+      .spacer { flex: 1; }
+      #dropzone { position: absolute; left:0; right:0; bottom:0; top:36px; border: 2px dashed #334155; border-radius: 8px; display: none; place-items: center; color: #94a3b8; background: rgba(15, 23, 42, 0.6); }
+      #dropzone.show { display: grid; }
+      .badge { background: #1f2937; padding: 4px 8px; border-radius: 6px; font-size: 12px; }
+      button { background: #1f2937; color: #e5e7eb; border: 1px solid #334155; border-radius: 6px; padding: 6px 10px; cursor: pointer; }
+      button:hover { background: #111827; }
+      .modal-backdrop { position: fixed; inset: 0; background: rgba(2,6,23,0.6); display: grid; place-items: center; z-index: 30; }
+      .modal-backdrop[hidden] { display: none !important; }
+      .modal { width: 700px; max-width: calc(100% - 40px); max-height: 80vh; background: #0b1324; border: 1px solid #1f2937; border-radius: 8px; overflow: hidden; display: flex; flex-direction: column; }
+      .modal-header { display: flex; align-items: center; padding: 10px 12px; border-bottom: 1px solid #1f2937; }
+      .modal-header .close { margin-left: auto; }
+      .modal-toolbar { display: flex; gap: 8px; align-items: center; padding: 8px 12px; border-bottom: 1px solid #1f2937; }
+      .modal-list { padding: 10px 12px; overflow: auto; }
+      .list-row { display:flex; justify-content: space-between; gap:8px; padding:6px 8px; border:1px solid #1f2937; border-radius:6px; margin-bottom:6px; cursor:pointer; background:#0f172a; }
+    </style>
+  </head>
+  <body>
+    <div id="menubar" class="menubar">
+      <div class="menu">
+        <button class="menu-title">File</button>
+        <div class="menu-dropdown">
+          <button id="menu-new-map" class="menu-item">New Map</button>
+          <button id="menu-open-map" class="menu-item">Open Map…</button>
+          <button id="menu-save-map" class="menu-item">Save Map</button>
+          <button id="menu-open-grp" class="menu-item">Open GRP…</button>
+          <button id="menu-explore-grp" class="menu-item">GRP Explorer…</button>
+        </div>
+      </div>
+      <div class="menu">
+        <button class="menu-title">Edit</button>
+        <div class="menu-dropdown">
+          <button id="menu-reset-camera" class="menu-item">Reset Camera</button>
+        </div>
+      </div>
+      <div class="menu">
+        <button class="menu-title">Help</button>
+        <div class="menu-dropdown">
+          <button id="menu-help-about" class="menu-item">About BUILD3JS</button>
+        </div>
+      </div>
+      <div class="spacer"></div>
+      <span id="status" class="badge">Ready</span>
+    </div>
+
+    <input id="file" type="file" accept=".map" style="display:none" />
+    <input id="grpfile" type="file" accept=".grp,.GRP" style="display:none" />
+
+    <div id="app"></div>
+
+    <div id="dropzone"><div>Drop a BUILD .map or .grp here</div></div>
+
+    <div id="modal-backdrop" class="modal-backdrop" hidden>
+      <div class="modal">
+        <div class="modal-header">
+          <strong>GRP Explorer</strong>
+          <button id="modal-close" class="close">✕</button>
+        </div>
+        <div class="modal-toolbar">
+          <button id="grp-try-builtin">Try built-in DUKE3D.GRP</button>
+          <span id="grp-meta" class="badge">No GRP loaded</span>
+        </div>
+        <div id="grp-list" class="modal-list"></div>
+      </div>
+    </div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+  </html>
