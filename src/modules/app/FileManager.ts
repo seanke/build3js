@@ -48,7 +48,7 @@ export class FileManager {
   /**
    * Fetch built-in GRP file from server
    */
-  async fetchBuiltinGrp(filename: string = '/DUKE3D.GRP'): Promise<ArrayBuffer> {
+  async fetchBuiltinGrp(filename: string = './DUKE3D.GRP'): Promise<ArrayBuffer> {
     const res = await fetch(filename);
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     return await res.arrayBuffer();
