@@ -199,6 +199,12 @@ export class AppController {
     }
   }
 
+  frameToMapBounds() {
+    if (this.view2d) {
+      this.view2d.frameToMapBounds();
+    }
+  }
+
   startRenderLoop() {
     const tick = () => {
       this.controls.update();

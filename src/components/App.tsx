@@ -20,7 +20,7 @@ export function App() {
   // State
   const [currentMap, setCurrentMap] = useState<BuildMap | null>(null);
   const [currentGrp, setCurrentGrp] = useState<{ arc: GrpArchive; name: string } | null>(null);
-  const [viewMode, setViewMode] = useState<ViewMode>('3d');
+  const [viewMode, setViewMode] = useState<ViewMode>('split');
   const [status, setStatus] = useState('Initializing...');
   const [isGroupManagerOpen, setIsGroupManagerOpen] = useState(false);
   const [isDragOver, setIsDragOver] = useState(false);
@@ -68,7 +68,42 @@ export function App() {
       const buf = await fileManager.fetchBuiltinGrp();
       const arc = await fileManager.loadGrpFromBuffer(buf);
       app.setCurrentGrp(arc, 'DUKE3D.GRP');
-      setStatus('Ready. Drop a .map file or use GRP Explorer to load maps.');
+
+      // Auto-load E1L1.MAP (the actual filename in Duke3D)
+      let mapEntry = arc.get('E1L1.MAP');
+      if (!mapEntry) {
+        // Try E1M1 for other versions
+        mapEntry = arc.get('E1M1.MAP');
+      }
+      if (!mapEntry) {
+        // If still not found, try to load the first map file
+        const mapFiles = arc.entries.filter(f => f.name.toLowerCase().endsWith('.map'));
+        if (mapFiles.length > 0) {
+          mapEntry = mapFiles[0];
+        }
+      }
+
+      if (mapEntry) {
+        setStatus(`Loading ${mapEntry.name}...`);
+        try {
+          const map = await fileManager.loadMapFromGrpEntry(arc, mapEntry);
+          app.setCurrentMap(map);
+
+          // Frame the 2D view to the map bounds after a short delay
+          setTimeout(() => {
+            app.frameToMapBounds();
+          }, 100);
+
+          setStatus(
+            `Loaded: ${mapEntry.name} — sectors: ${map.sectors.length}, ` +
+            `walls: ${map.walls.length}, sprites: ${map.sprites.length}`
+          );
+        } catch (mapError: any) {
+          setStatus('Ready. Drop a .map file or use GRP Explorer to load maps.');
+        }
+      } else {
+        setStatus('Ready. Drop a .map file or use GRP Explorer to load maps.');
+      }
     } catch (e: any) {
       console.warn('Could not load built-in GRP:', e);
       setStatus('Ready. Please open a GRP file to begin.');
