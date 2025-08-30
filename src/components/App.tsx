@@ -1,7 +1,6 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { MenuBar } from './ui/MenuBar';
-import { GrpExplorerModal } from './ui/GrpExplorerModal';
-import { GrpInfoModal } from './ui/GrpInfoModal';
+import { GroupManagerModal } from './ui/GroupManagerModal';
 import { StatusBar } from './ui/StatusBar';
 import { ViewContainer } from './ui/ViewContainer';
 import { InspectorPanel } from './ui/InspectorPanel';
@@ -23,8 +22,7 @@ export function App() {
   const [currentGrp, setCurrentGrp] = useState<{ arc: GrpArchive; name: string } | null>(null);
   const [viewMode, setViewMode] = useState<ViewMode>('3d');
   const [status, setStatus] = useState('Initializing...');
-  const [isGrpModalOpen, setIsGrpModalOpen] = useState(false);
-  const [isGrpInfoModalOpen, setIsGrpInfoModalOpen] = useState(false);
+  const [isGroupManagerOpen, setIsGroupManagerOpen] = useState(false);
   const [isDragOver, setIsDragOver] = useState(false);
   const [selectionInfo, setSelectionInfo] = useState<SelectionInfo | null>(null);
   const [isInspectorOpen, setIsInspectorOpen] = useState(false);
@@ -232,7 +230,7 @@ export function App() {
         onOpenMap={handleOpenMap}
         onSaveMap={handleSaveMap}
         onOpenGrp={handleOpenGrp}
-        onExploreGrp={() => setIsGrpModalOpen(true)}
+        onManageGroup={() => setIsGroupManagerOpen(true)}
         onResetCamera={handleResetCamera}
         viewMode={viewMode}
         onViewModeChange={setViewMode}
@@ -262,7 +260,7 @@ export function App() {
       <StatusBar 
         status={status} 
         currentGrp={currentGrp} 
-        onGrpClick={() => setIsGrpInfoModalOpen(true)}
+        onGrpClick={() => setIsGroupManagerOpen(true)}
       />
       
       {isDragOver && (
@@ -273,19 +271,13 @@ export function App() {
         </div>
       )}
       
-      <GrpExplorerModal
-        isOpen={isGrpModalOpen}
-        onClose={() => setIsGrpModalOpen(false)}
+      <GroupManagerModal
+        isOpen={isGroupManagerOpen}
+        onClose={() => setIsGroupManagerOpen(false)}
         grp={currentGrp}
         fileManager={fileManagerRef.current}
         appController={appControllerRef.current}
         onStatusChange={setStatus}
-      />
-      
-      <GrpInfoModal
-        isOpen={isGrpInfoModalOpen}
-        onClose={() => setIsGrpInfoModalOpen(false)}
-        grp={currentGrp}
       />
     </div>
   );

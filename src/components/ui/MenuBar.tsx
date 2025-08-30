@@ -8,7 +8,7 @@ interface MenuBarProps {
   onOpenMap: (file: File) => void;
   onSaveMap: () => void;
   onOpenGrp: (file: File) => void;
-  onExploreGrp: () => void;
+  onManageGroup: () => void;
   onResetCamera: () => void;
   viewMode: ViewMode;
   onViewModeChange: (mode: ViewMode) => void;
@@ -20,7 +20,7 @@ export function MenuBar({
   onOpenMap,
   onSaveMap,
   onOpenGrp,
-  onExploreGrp,
+  onManageGroup,
   onResetCamera,
   viewMode,
   onViewModeChange,
@@ -47,11 +47,11 @@ export function MenuBar({
   return (
     <>
       <Menubar.Root className="menu-bar">
-        {/* File Menu */}
+        {/* Map Menu */}
         <Menubar.Menu>
           <Menubar.Trigger className="menu-trigger">
             <File size={16} />
-            File
+            Map
           </Menubar.Trigger>
           <Menubar.Portal>
             <Menubar.Content className="menu-content">
@@ -72,12 +72,23 @@ export function MenuBar({
                 Save Map
                 <span className="menu-shortcut">Ctrl+S</span>
               </Menubar.Item>
-              <Menubar.Separator className="menu-separator" />
+            </Menubar.Content>
+          </Menubar.Portal>
+        </Menubar.Menu>
+
+        {/* Group Menu */}
+        <Menubar.Menu>
+          <Menubar.Trigger className="menu-trigger">
+            <Folder size={16} />
+            Group
+          </Menubar.Trigger>
+          <Menubar.Portal>
+            <Menubar.Content className="menu-content">
               <Menubar.Item className="menu-item" onClick={handleOpenGrpClick}>
                 Open GRP...
               </Menubar.Item>
-              <Menubar.Item className="menu-item" onClick={onExploreGrp}>
-                GRP Explorer...
+              <Menubar.Item className="menu-item" onClick={onManageGroup}>
+                Group Manager...
               </Menubar.Item>
             </Menubar.Content>
           </Menubar.Portal>
