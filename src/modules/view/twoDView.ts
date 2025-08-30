@@ -194,19 +194,32 @@ export class TwoDView {
       this.dragging = false;
     });
 
-    this.canvas.addEventListener('wheel', (e) => {
+    this.canvas.addEventListener('wheel', (e: WheelEvent) => {
       e.preventDefault();
       const mouse = this.getMouse(e);
-      const delta = Math.sign(e.deltaY) * -0.1;
-      const prevZoom = this.zoom;
-      const nextZoom = Math.max(0.001, Math.min(50, prevZoom * (1 + delta))); // Allow much more zoom out
-      // Zoom towards mouse position
-      const worldBefore = this.screenToWorld(mouse);
-      this.zoom = nextZoom;
-      const worldAfter = this.screenToWorld(mouse);
-      this.pan.x += (worldAfter.x - worldBefore.x) * this.zoom;
-      this.pan.y -= (worldAfter.y - worldBefore.y) * this.zoom;
-      this.requestDraw();
+      
+      // Check if this is a trackpad gesture (non-integer deltas usually indicate trackpad)
+      // Also check for ctrlKey which is set during pinch gestures on some systems
+      const isTrackpadPan = Math.abs(e.deltaX) > 0 || (Math.abs(e.deltaY) % 1 !== 0 && !e.ctrlKey);
+      
+      if (isTrackpadPan && !e.ctrlKey) {
+        // Two-finger pan on trackpad
+        this.pan.x -= e.deltaX;
+        this.pan.y -= e.deltaY;
+        this.requestDraw();
+      } else {
+        // Mouse wheel zoom or pinch-to-zoom
+        const delta = Math.sign(e.deltaY) * -0.1;
+        const prevZoom = this.zoom;
+        const nextZoom = Math.max(0.001, Math.min(50, prevZoom * (1 + delta))); // Allow much more zoom out
+        // Zoom towards mouse position
+        const worldBefore = this.screenToWorld(mouse);
+        this.zoom = nextZoom;
+        const worldAfter = this.screenToWorld(mouse);
+        this.pan.x += (worldAfter.x - worldBefore.x) * this.zoom;
+        this.pan.y -= (worldAfter.y - worldBefore.y) * this.zoom;
+        this.requestDraw();
+      }
     }, { passive: false });
 
     // Keyboard shortcuts
